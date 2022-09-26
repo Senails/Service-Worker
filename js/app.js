@@ -1,27 +1,25 @@
-window.addEventListener('load', async () => {
-  if ('serviceWorker' in navigator) {
-    try {
-      const reg = await navigator.serviceWorker.register('/sw.js')
-      console.log('Service worker register success', reg)
-    } catch (e) {
-      console.log('Service worker register fail')
+window.addEventListener('load', async() => {
+    if (navigator.serviceWorker) {
+        try {
+            let register = await navigator.serviceWorker.register('./sw.js');
+        } catch {
+            console.log('sw fail')
+        }
     }
-  }
-
-  await loadPosts()
+    await loadPosts()
 })
 
 
 async function loadPosts() {
-  const res = await fetch('https://jsonplaceholder.typicode.com/posts?_limit=11')
-  const data = await res.json()
+    const res = await fetch('https://jsonplaceholder.typicode.com/posts?_limit=11')
+    const data = await res.json()
 
-  const container = document.querySelector('#posts')
-  container.innerHTML = data.map(toCard).join('\n')
+    const container = document.querySelector('#posts')
+    container.innerHTML = data.map(toCard).join('\n')
 }
 
 function toCard(post) {
-  return `
+    return `
     <div class="card">
       <div class="card-title">
         ${post.title}

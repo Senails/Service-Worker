@@ -1,53 +1,51 @@
-const staticCacheName = 's-app-v3'
-const dynamicCacheName = 'd-app-v3'
+const StaticCacheName = 's-app-v5';
+const DinamicCache = 'd-app-v3';
 
-const assetUrls = [
-  'index.html',
-  '/js/app.js',
-  '/css/styles.css',
-  'offline.html'
+const assets = [
+    './js/app.js',
+    './css/styles.css',
+    './offline.html',
+    './index.html'
 ]
 
-self.addEventListener('install', async event => {
-  const cache = await caches.open(staticCacheName)
-  await cache.addAll(assetUrls)
+self.addEventListener('install', async(e) => {
+    let cache = await caches.open(StaticCacheName);
+    await cache.addAll(assets);
 })
 
-self.addEventListener('activate', async event => {
-  const cacheNames = await caches.keys()
-  await Promise.all(
-    cacheNames
-      .filter(name => name !== staticCacheName)
-      .filter(name => name !== dynamicCacheName)
-      .map(name => caches.delete(name))
-  )
+self.addEventListener('activate', async() => {
+    let keys = await caches.keys();
+    await Promise.all(keys
+        .filter(name => name !== StaticCacheName)
+        .filter(name => name !== DinamicCache)
+        .map(name => caches.delete(name)))
 })
 
-self.addEventListener('fetch', event => {
-  const {request} = event
+self.addEventListener('fetch', (e) => {
+    let { request } = e;
 
-  const url = new URL(request.url)
-  if (url.origin === location.origin) {
-    event.respondWith(cacheFirst(request))
-  } else {
-    event.respondWith(networkFirst(request))
-  }
+    let url = new URL(request.url);
+
+    if (url.origin === location.origin) {
+        e.respondWith(cachefirst(request));
+    } else {
+        e.respondWith(networkfirst(request));
+    }
 })
 
-
-async function cacheFirst(request) {
-  const cached = await caches.match(request)
-  return cached ?? await fetch(request)
+async function cachefirst(req) {
+    let cached = await caches.match(req);
+    return cached ? cached : await fetch(req)
 }
 
-async function networkFirst(request) {
-  const cache = await caches.open(dynamicCacheName)
-  try {
-    const response = await fetch(request)
-    await cache.put(request, response.clone())
-    return response
-  } catch (e) {
-    const cached = await cache.match(request)
-    return cached ?? await caches.match('/offline.html')
-  }
+async function networkfirst(req) {
+    let cache = await caches.open(DinamicCache);
+    try {
+        let res = await fetch(req);
+        await cache.put(req, res.clone());
+        return res;
+    } catch {
+        let res = await cache.match(req);
+        return res ? res : await cache.match('./offline.html');
+    }
 }
