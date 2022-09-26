@@ -1,11 +1,12 @@
-const StaticCacheName = 's-app-v5';
-const DinamicCache = 'd-app-v3';
+const StaticCacheName = 's-app-v7';
+const DinamicCache = 'd-app-v7';
 
 const assets = [
     './js/app.js',
     './css/styles.css',
     './offline.html',
-    './index.html'
+    './index.html',
+    './sw.js',
 ]
 
 self.addEventListener('install', async(e) => {
