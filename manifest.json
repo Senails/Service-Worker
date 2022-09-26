@@ -5,7 +5,7 @@
     "background_color": "#4589bf",
     "display": "standalone",
     "orientation": "portrait",
-    "start_url": ".",
+    "start_url": "/",
     "icons": [{
             "src": "/icons/app-icon-96-96.png",
             "sizes": "96x96",

@@ -7,16 +7,12 @@ const assets = [
     './offline.html',
     './sw.js',
     './manifest.json',
-    '/index.html'
+    '/'
 ]
 
 self.addEventListener('install', async(e) => {
     let cache = await caches.open(StaticCacheName);
     await cache.addAll(assets);
-    try {
-        let res = await fetch('/index.html');
-        await cache.put('/', res);
-    } catch {}
 })
 
 self.addEventListener('activate', async() => {
